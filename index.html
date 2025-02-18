@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exactness Checker for Differential Equations</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input { width: 80%; padding: 8px; margin: 10px 0; }
+        button { padding: 10px; background: blue; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Exactness Checker for Differential Equations</h2>
+    <p>Enter the functions \( M(x,y) \) and \( N(x,y) \) below:</p>
+    
+    <input type="text" id="M" placeholder="Enter M(x,y), e.g., x*y + y^2">
+    <input type="text" id="N" placeholder="Enter N(x,y), e.g., x^2 + 2*x*y">
+    <br>
+    <button onclick="checkExactness()">Check Exactness</button>
+    
+    <div class="result" id="result"></div>
+    
+    <script>
+        function derivative(expr, variable) {
+            let h = 1e-5;
+            return function(x, y) {
+                let scope1 = {x: x, y: y};
+                let scope2 = {x: x, y: y};
+                scope1[variable] += h;
+                scope2[variable] -= h;
+                
+                let f1 = math.evaluate(expr, scope1);
+                let f2 = math.evaluate(expr, scope2);
+                
+                return (f1 - f2) / (2 * h);
+            };
+        }
+        
+        function checkExactness() {
+            let M = document.getElementById("M").value;
+            let N = document.getElementById("N").value;
+            
+            try {
+                let dM_dy = derivative(M, 'y');
+                let dN_dx = derivative(N, 'x');
+                
+                let testX = 1, testY = 1; 
+                let resultM = dM_dy(testX, testY).toFixed(4);
+                let resultN = dN_dx(testX, testY).toFixed(4);
+                
+                if (Math.abs(resultM - resultN) < 1e-4) {
+                    document.getElementById("result").innerHTML = "The equation is <span style='color:green;'>Exact</span>.";
+                } else {
+                    document.getElementById("result").innerHTML = "The equation is <span style='color:red;'>Not Exact</span>.";
+                }
+            } catch (e) {
+                document.getElementById("result").innerHTML = "Error in expression. Please check your input.";
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.4/math.min.js"></script>
+</body>
+</html>
