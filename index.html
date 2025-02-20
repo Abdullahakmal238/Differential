@@ -3,64 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exactness Checker for Differential Equations</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <title>Exact Differential Equation Checker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.3.0/math.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        input { width: 80%; padding: 8px; margin: 10px 0; }
-        button { padding: 10px; background: blue; color: white; border: none; cursor: pointer; }
-        .result { margin-top: 20px; font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <h2>Exactness Checker for Differential Equations</h2>
-    <p>Enter the functions \( M(x,y) \) and \( N(x,y) \) below:</p>
-    
-    <input type="text" id="M" placeholder="Enter M(x,y), e.g., x*y + y^2">
-    <input type="text" id="N" placeholder="Enter N(x,y), e.g., x^2 + 2*x*y">
-    <br>
-    <button onclick="checkExactness()">Check Exactness</button>
-    
-    <div class="result" id="result"></div>
-    
+    <div class="container">
+        <h2>Exact Differential Equation Checker</h2>
+        <label for="M">Enter M(x, y):</label>
+        <input type="text" id="M" placeholder="e.g., y+cos(x)">
+        <label for="N">Enter N(x, y):</label>
+        <input type="text" id="N" placeholder="e.g., x+siny">
+        <button onclick="checkExactness()">Check Exactness</button>
+        <h3 id="result"></h3>
+    </div>
+
     <script>
-        function derivative(expr, variable) {
-            let h = 1e-5;
-            return function(x, y) {
-                let scope1 = {x: x, y: y};
-                let scope2 = {x: x, y: y};
-                scope1[variable] += h;
-                scope2[variable] -= h;
-                
-                let f1 = math.evaluate(expr, scope1);
-                let f2 = math.evaluate(expr, scope2);
-                
-                return (f1 - f2) / (2 * h);
-            };
-        }
-        
         function checkExactness() {
             let M = document.getElementById("M").value;
             let N = document.getElementById("N").value;
-            
+
             try {
-                let dM_dy = derivative(M, 'y');
-                let dN_dx = derivative(N, 'x');
+                let dM_dy = math.derivative(M, 'y').toString();
+                let dN_dx = math.derivative(N, 'x').toString();
                 
-                let testX = 1, testY = 1; 
-                let resultM = dM_dy(testX, testY).toFixed(4);
-                let resultN = dN_dx(testX, testY).toFixed(4);
-                
-                if (Math.abs(resultM - resultN) < 1e-4) {
-                    document.getElementById("result").innerHTML = "The equation is <span style='color:green;'>Exact</span>.";
+                if (math.simplify(dM_dy).toString() === math.simplify(dN_dx).toString()) {
+                    document.getElementById("result").innerText = "The equation is Exact";
                 } else {
-                    document.getElementById("result").innerHTML = "The equation is <span style='color:red;'>Not Exact</span>.";
+                    document.getElementById("result").innerText = "The equation is NOT Exact";
                 }
-            } catch (e) {
-                document.getElementById("result").innerHTML = "Error in expression. Please check your input.";
+            } catch (error) {
+                document.getElementById("result").innerText = "Invalid input. Please check your equations.";
             }
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.4/math.min.js"></script>
 </body>
 </html>
