@@ -1,157 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Differential Equation Checker</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exact Differential Equation Checker</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.3.0/math.js"></script>
     <style>
-      body {
-        font-family: "Poppins", sans-serif;
-        text-align: center;
-        margin: 20px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-      }
-      .container {
-        max-width: 500px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        color: black;
-        box-sizing: border-box;
-      }
-      input,
-      button {
-        width: calc(100% - 22px);
-        padding: 12px;
-        margin: 10px 0;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        font-size: 16px;
-        box-sizing: border-box;
-        display: block;
-      }
-      button {
-        background: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        transition: 0.3s;
-      }
-      button:hover {
-        background: #0056b3;
-      }
-      .instructions {
-        text-align: left;
-        font-size: 14px;
-        margin-top: 20px;
-        background: #f9f9f9;
-        padding: 10px;
-        border-radius: 5px;
-      }
-      .rules {
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 15px;
-        text-align: left;
-        background: none;
-        color: black;
-        border: 1px solid #ddd;
-      }
-      .rules h3 {
-        margin: 0 0 10px;
-        font-size: 18px;
-      }
-      .rules ul {
-        padding-left: 20px;
-        list-style-type: square;
-      }
-      .rules li {
-        margin-bottom: 5px;
-      }
-      #result {
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 15px;
-        color: #333;
-      }
-      .footer {
-        margin-top: 20px;
-        font-size: 14px;
-        color: white;
-        text-align: center;
-      }
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            color: black;
+            box-sizing: border-box;
+        }
+        input, button {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            box-sizing: border-box;
+            display: block;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            text-align: left;
+            font-size: 14px;
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .rules {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+            background: none;
+            color: black;
+            border: 1px solid #ddd;
+        }
+        .rules h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+        .rules ul {
+            padding-left: 20px;
+            list-style-type: square;
+        }
+        .rules li {
+            margin-bottom: 5px;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #333;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <h2>Exact Differential Equation Checker</h2>
-      <p class="instructions">
-        <strong>Instructions:</strong> Enter your differential equation
-        components M(x, y) and N(x, y) in the fields below. The program will
-        check if the equation is exact or Not exact.
-      </p>
-
-      <div class="rules">
-        <h3>Rules for Input:</h3>
-        <ul>
-          <li>Use * for multiplication (e.g., enter "2*y" instead of "2y").</li>
-          <li>
-            Use exp(x) for exponentials (e.g., enter "exp(2*y)" instead of
-            "e^2y").
-          </li>
-          <li>
-            Use standard function notation (e.g., "sin(x)", "cos(x)", "tan(x)").
-          </li>
-          <li>Use parentheses properly (e.g., "cos(x*y)").</li>
-          <li>
-            Write powers explicitly using ^ (e.g., "y^2" instead of "y²").
-          </li>
-        </ul>
-      </div>
-
-      <label for="M">Enter M(x, y):</label>
-      <input type="text" id="M" placeholder="e.g., y+cos(x)" />
-      <label for="N">Enter N(x, y):</label>
-      <input type="text" id="N" placeholder="e.g., x+siny" />
-      <button onclick="checkExactness()">Check Exactness</button>
-      <h3 id="result"></h3>
+        <h2>Differential Equation Checker</h2>
+        <p class="instructions"><strong>Instructions:</strong> Enter your differential equation components M(x, y) and N(x, y) in the fields below. The program will check if the equation is exact or Not exact.</p>
+        
+        <div class="rules">
+            <h3>Rules for Input:</h3>
+            <ul>
+                <li>Use * for multiplication (e.g., enter "2*y" instead of "2y").</li>
+                <li>Use exp(x) for exponentials (e.g., enter "exp(2*y)" instead of "e^2y").</li>
+                <li>Use standard function notation (e.g., "sin(x)", "cos(x)", "tan(x)").</li>
+                <li>Use parentheses properly (e.g., "cos(x*y)").</li>
+                <li>Write powers explicitly using ^ (e.g., "y^2" instead of "y²").</li>
+            </ul>
+        </div>
+        
+        <label for="M">Enter M(x, y):</label>
+        <input type="text" id="M" placeholder="e.g., y+cos(x)" required>
+        <label for="N">Enter N(x, y):</label>
+        <input type="text" id="N" placeholder="e.g., x+siny" required>
+        <button onclick="checkExactness()">Check Exactness</button>
+        <h3 id="result"></h3>
     </div>
 
     <div class="footer">
-      © 2025 Lahore Leads University. All rights reserved.
+        © 2025 Lahore Leads University. All rights reserved.
     </div>
 
     <script>
-      function checkExactness() {
-        let M = document.getElementById("M").value;
-        let N = document.getElementById("N").value;
+        function checkExactness() {
+            let M = document.getElementById("M").value.trim();
+            let N = document.getElementById("N").value.trim();
+            let result = document.getElementById("result");
 
-        try {
-          let dM_dy = math.derivative(M, "y").toString();
-          let dN_dx = math.derivative(N, "x").toString();
+            if (M === "" || N === "") {
+                result.innerText = "⚠️ Please fill in both fields.";
+                result.style.color = "orange";
+                return;
+            }
 
-          if (
-            math.simplify(dM_dy).toString() === math.simplify(dN_dx).toString()
-          ) {
-            document.getElementById("result").innerText =
-              "✅ The equation is Exact";
-            document.getElementById("result").style.color = "green";
-          } else {
-            document.getElementById("result").innerText =
-              "❌ The equation is NOT Exact";
-            document.getElementById("result").style.color = "red";
-          }
-        } catch (error) {
-          document.getElementById("result").innerText =
-            "⚠️ Invalid input. Please check your equations.";
-          document.getElementById("result").style.color = "orange";
+            try {
+                let dM_dy = math.derivative(M, 'y').toString();
+                let dN_dx = math.derivative(N, 'x').toString();
+                
+                if (math.simplify(dM_dy).toString() === math.simplify(dN_dx).toString()) {
+                    result.innerText = "✅ The equation is Exact";
+                    result.style.color = "green";
+                } else {
+                    result.innerText = "❌ The equation is NOT Exact";
+                    result.style.color = "red";
+                }
+            } catch (error) {
+                result.innerText = "⚠️ Invalid input. Please check your equations.";
+                result.style.color = "orange";
+            }
         }
-      }
     </script>
-  </body>
+</body>
 </html>
