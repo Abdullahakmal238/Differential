@@ -7,68 +7,163 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.3.0/math.js"></script>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Poppins", sans-serif;
         text-align: center;
         margin: 20px;
-        background-color: #f4f4f4;
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
       }
       .container {
-        max-width: 500px;
+        max-width: 550px;
         margin: auto;
         background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
       }
-      input,
-      button {
+      .container:hover {
+        transform: scale(1.02);
+      }
+      h2 {
+        color: #333;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin: 10px 0 5px;
+      }
+      input {
         width: 100%;
         padding: 10px;
-        margin: 10px 0;
+        margin-bottom: 10px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+      input:focus {
+        border-color: #007bff;
+        outline: none;
       }
       button {
+        width: 100%;
+        padding: 12px;
         background: #007bff;
         color: white;
         border: none;
+        border-radius: 6px;
+        font-size: 16px;
         cursor: pointer;
+        transition: 0.3s;
       }
       button:hover {
         background: #0056b3;
+      }
+      #result {
+        font-weight: bold;
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 6px;
+        display: inline-block;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .rules {
+        text-align: left;
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-left: 5px solid #007bff;
+        border-radius: 8px;
+      }
+      .rules h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #007bff;
+        cursor: pointer;
+      }
+      .rules-content {
+        display: none;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      .rules-content ul {
+        padding-left: 20px;
+      }
+      .rules-content li {
+        margin-bottom: 5px;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h2>Exact Differential Equation Checker</h2>
+
       <label for="M">Enter M(x, y):</label>
       <input type="text" id="M" placeholder="e.g., y+cos(x)" />
       <label for="N">Enter N(x, y):</label>
       <input type="text" id="N" placeholder="e.g., x+siny" />
       <button onclick="checkExactness()">Check Exactness</button>
       <h3 id="result"></h3>
+
+      <!-- Rules Section -->
+      <div class="rules">
+        <h3 onclick="toggleRules()">📖 How to Write Equations (Click to Expand)</h3>
+        <div class="rules-content" id="rulesContent">
+          <ul>
+            <li>✅ Use <b>+</b>, <b>-</b>, <b>*</b>, <b>/</b>, and <b>^</b> for operations (e.g., <code>x^2 + y*sin(x)</code>).</li>
+            <li>✅ Use functions like <code>sin(x)</code>, <code>cos(y)</code>, <code>exp(x)</code>, <code>log(x)</code>, <code>sqrt(x)</code>.</li>
+            <li>✅ Variables must be <b>x</b> and <b>y</b> only.</li>
+            <li>✅ Use parentheses <b>()</b> for clarity (e.g., <code>sin(x+y)</code>).</li>
+            <li>✅ Always include multiplication (e.g., <code>2*x*y</code>, not <code>2xy</code>).</li>
+            <li>❌ Do NOT use <b>=</b> signs (only enter function expressions).</li>
+            <li>❌ No constants-only expressions (e.g., <code>5</code> is invalid).</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <script>
       function checkExactness() {
-        let M = document.getElementById("M").value;
-        let N = document.getElementById("N").value;
+        let M = document.getElementById("M").value.trim();
+        let N = document.getElementById("N").value.trim();
+        let resultElement = document.getElementById("result");
+
+        // Validation: Ensure inputs are not empty
+        if (M === "" || N === "") {
+          resultElement.innerText = "Please fill in both fields.";
+          resultElement.className = "error";
+          return;
+        }
 
         try {
           let dM_dy = math.derivative(M, "y").toString();
           let dN_dx = math.derivative(N, "x").toString();
 
-          if (
-            math.simplify(dM_dy).toString() === math.simplify(dN_dx).toString()
-          ) {
-            document.getElementById("result").innerText =
-              "The equation is Exact";
+          if (math.simplify(dM_dy).toString() === math.simplify(dN_dx).toString()) {
+            resultElement.innerText = "The equation is Exact";
+            resultElement.className = "success";
           } else {
-            document.getElementById("result").innerText =
-              "The equation is NOT Exact";
+            resultElement.innerText = "The equation is NOT Exact";
+            resultElement.className = "error";
           }
         } catch (error) {
-          document.getElementById("result").innerText =
-            "Invalid input. Please check your equations.";
+          resultElement.innerText = "Invalid input. Please check your equations.";
+          resultElement.className = "error";
+        }
+      }
+
+      function toggleRules() {
+        let rulesContent = document.getElementById("rulesContent");
+        if (rulesContent.style.display === "block") {
+          rulesContent.style.display = "none";
+        } else {
+          rulesContent.style.display = "block";
         }
       }
     </script>
